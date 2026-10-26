@@ -23,13 +23,13 @@ def pe_servicii(tinte):
     """Dict: serviciu -> lista de porturi."""
     grupe = {}
     for t in tinte:
-        serviciu = t["serviciu"]
+        serviciu = t.get("serviciu", "necunoscut")
         port = port_valid(t["port"])
         if port is None:
             print("sar peste", t["gazda"], ": port invalid", t["port"])
             continue
-        grupe[serviciu] = []
-        grupe[serviciu].append(port)
+        grupe.setdefault(serviciu, []).append(port)
+    return grupe
 
 
 def peste_prag(tinte, prag):
@@ -45,11 +45,11 @@ def peste_prag(tinte, prag):
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("fisier")
-    p.add_argument("--prag", default=1024)
+    p.add_argument("--prag", type=int, default=1024)
     a = p.parse_args()
 
     tinte = incarca(a.fisier)
-    print("Tinte citite: " , len(tinta))
+    print("Tinte citite: " , len(tinte))
 
     grupe = pe_servicii(tinte)
     for serviciu, porturi in grupe.items():
